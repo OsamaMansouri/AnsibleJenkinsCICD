@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        APP_NAME = 'my-first-app'
+        APP_NAME = 'AnsibleJenkinsCICD'
         VERSION = '1.0.0'
         DEPLOY_ENV = 'staging'
     }
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo '=== Installing Python dependencies ==='
                 dir('python') {
-                    bat 'pip install -r requirements.txt'
+                    sh 'pip install -r requirements.txt'
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo '=== Running Python tests ==='
                 dir('python') {
-                    bat 'python test_app.py'
+                    sh 'python test_app.py'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 echo '=== Building and Testing Java application ==='
                 dir('java') {
-                    bat 'mvn clean test'
+                    sh 'mvn clean test'
                 }
             }
         }
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 echo '=== Packaging Java application ==='
                 dir('java') {
-                    bat 'mvn package -DskipTests'
+                    sh 'mvn package -DskipTests'
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
         stage('🚀 Deploy') {
             steps {
                 echo "=== Deploying to ${DEPLOY_ENV} ==="
-                bat "echo Deployed ${APP_NAME} v${VERSION} to ${DEPLOY_ENV}!"
+                sh "echo Deployed ${APP_NAME} v${VERSION} to ${DEPLOY_ENV}!"
             }
         }
     }
