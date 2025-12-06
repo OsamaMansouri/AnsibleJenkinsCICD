@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo '=== Installing Python dependencies ==='
                 dir('python') {
-                    sh 'pip install -r requirements.txt'
+                    sh 'pip3 install -r requirements.txt'
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo '=== Running Python tests ==='
                 dir('python') {
-                    sh 'python test_app.py'
+                    sh 'python3 test_app.py'
                 }
             }
         }
