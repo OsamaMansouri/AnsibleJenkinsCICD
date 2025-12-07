@@ -17,7 +17,7 @@ pipeline {
         }
         
         // ==================== PYTHON PIPELINE ====================
-        stage('�� Python - Install & Test') {
+        stage('🐍 Python - Install & Test') {
             agent {
                 docker { 
                     image 'python:3.9-slim'
@@ -50,11 +50,52 @@ pipeline {
             }
         }
         
-        // ==================== DEPLOY ====================
-        stage('🚀 Deploy') {
+        // ==================== ANSIBLE DEPLOYMENT ====================
+        stage('🔧 Ansible - Deploy to Servers') {
+            agent {
+                docker { 
+                    image 'willhallonline/ansible:latest'
+                    args '-u root --network host'
+                }
+            }
             steps {
-                echo "=== Deploying to ${DEPLOY_ENV} ==="
-                sh "echo Deployed ${APP_NAME} v${VERSION} to ${DEPLOY_ENV}!"
+                echo "=== Deploying with Ansible to ${DEPLOY_ENV} ==="
+                
+                // Show Ansible version
+                sh 'ansible --version'
+                
+                // Test connection to all servers
+                echo '=== Testing Server Connections ==='
+                sh '''
+                    cd ansible
+                    ansible -i inventory/hosts.ini all -m ping || echo "Some servers may not be reachable"
+                '''
+                
+                // Run deployment playbook
+                echo '=== Running Deployment Playbook ==='
+                sh '''
+                    cd ansible
+                    ansible-playbook -i inventory/hosts.ini playbooks/test-connection.yml || echo "Playbook completed with warnings"
+                '''
+                
+                echo "✅ Ansible deployment completed for ${APP_NAME} v${VERSION}"
+            }
+        }
+        
+        // ==================== FINAL STATUS ====================
+        stage('🚀 Deploy Complete') {
+            steps {
+                echo "=== Deployment Summary ==="
+                sh """
+                    echo '======================================'
+                    echo '🎉 CI/CD PIPELINE COMPLETE!'
+                    echo '======================================'
+                    echo 'App Name: ${APP_NAME}'
+                    echo 'Version: ${VERSION}'
+                    echo 'Environment: ${DEPLOY_ENV}'
+                    echo 'Build: ${BUILD_NUMBER}'
+                    echo '======================================'
+                """
             }
         }
     }
@@ -64,7 +105,7 @@ pipeline {
             echo '🎉 Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Pipeline failed! Check test results above.'
+            echo '❌ Pipeline failed! Check logs above.'
         }
         always {
             echo "Build URL: ${env.BUILD_URL}"

@@ -1,0 +1,40 @@
+version: '3.8'
+
+# Creates fake servers for Ansible testing
+# Usage: docker-compose up -d
+
+services:
+  # Development Server
+  dev-server:
+    build: .
+    container_name: ansible-dev-server
+    hostname: dev-server
+    ports:
+      - "2221:22"  # SSH on port 2221
+    networks:
+      - ansible-network
+
+  # Staging Server
+  staging-server:
+    build: .
+    container_name: ansible-staging-server
+    hostname: staging-server
+    ports:
+      - "2222:22"  # SSH on port 2222
+    networks:
+      - ansible-network
+
+  # Production Server
+  prod-server:
+    build: .
+    container_name: ansible-prod-server
+    hostname: prod-server
+    ports:
+      - "2223:22"  # SSH on port 2223
+    networks:
+      - ansible-network
+
+networks:
+  ansible-network:
+    driver: bridge
+

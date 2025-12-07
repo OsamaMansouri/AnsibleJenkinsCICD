@@ -1,0 +1,26 @@
+---
+# =====================================================
+# PING PLAYBOOK - Test connectivity to all hosts
+# =====================================================
+
+- name: Test Server Connectivity
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: 🏓 Ping all servers
+      ping:
+      
+    - name: 📋 Get server info
+      setup:
+        gather_subset:
+          - min
+      register: server_info
+      
+    - name: 📊 Display server info
+      debug:
+        msg: |
+          Server: {{ inventory_hostname }}
+          OS: {{ ansible_distribution | default('Unknown') }} {{ ansible_distribution_version | default('') }}
+          IP: {{ ansible_default_ipv4.address | default('N/A') }}
+

@@ -1,0 +1,34 @@
+---
+# =====================================================
+# TEST CONNECTION PLAYBOOK
+# Run this first to verify Ansible can reach all servers
+# =====================================================
+
+- name: Test Ansible Connection to All Servers
+  hosts: all
+  gather_facts: yes
+  
+  tasks:
+    - name: 🏓 Ping the server
+      ping:
+      
+    - name: 📋 Show server information
+      debug:
+        msg: |
+          ═══════════════════════════════════════════
+          ✅ CONNECTION SUCCESSFUL!
+          ═══════════════════════════════════════════
+          Server Name: {{ inventory_hostname }}
+          Environment: {{ env_name | default('unknown') }}
+          OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Python: {{ ansible_python_version }}
+          ═══════════════════════════════════════════
+          
+    - name: 💾 Show disk space
+      command: df -h /
+      register: disk_space
+      
+    - name: 📊 Display disk info
+      debug:
+        var: disk_space.stdout_lines
+
