@@ -8,7 +8,7 @@ Complete setup guide for the AnsibleJenkinsCICD project.
 
 - **Docker Desktop** - [Download](https://www.docker.com/products/docker-desktop)
 - **Git** - [Download](https://git-scm.com/downloads)
-- **ngrok** - [Download](https://ngrok.com/download)
+- **Cloudflare Tunnel** - [Download](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)
 
 ### Optional
 
@@ -57,18 +57,43 @@ docker-compose up -d
 docker network connect test-server_ansible-network jenkins
 ```
 
-## Step 6: Setup ngrok
+## Step 6: Setup Cloudflare Tunnel {#cloudflare-tunnel}
 
-```bash
-# Start ngrok tunnel to Jenkins
-ngrok http 9090
+### One-time Setup
+
+```powershell
+# Download cloudflared
+Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile "cloudflared.exe"
+
+# Login to Cloudflare (opens browser)
+.\cloudflared.exe tunnel login
+
+# Create a permanent tunnel
+.\cloudflared.exe tunnel create jenkins
+
+# Route to your domain (replace with your domain)
+.\cloudflared.exe tunnel route dns jenkins jenkins-subdomain
+```
+
+### Run the Tunnel
+
+```powershell
+# Start the tunnel (keep this running)
+.\cloudflared.exe tunnel --url http://localhost:9090 run jenkins
+```
+
+### (Optional) Install as Windows Service
+
+```powershell
+# Run at startup automatically
+.\cloudflared.exe service install
 ```
 
 ## Step 7: Configure GitHub Webhook
 
 1. Go to your GitHub repo → Settings → Webhooks
 2. Click "Add webhook"
-3. Payload URL: `https://YOUR-NGROK-URL/github-webhook/`
+3. Payload URL: `https://jenkins-osama.osamansouri.me/github-webhook/`
 4. Content type: `application/json`
 5. Events: "Just the push event"
 6. Click "Add webhook"
@@ -105,9 +130,10 @@ docker logs jenkins
 
 ### Webhook not working?
 
-- Check ngrok is running
+- Check Cloudflare Tunnel is running (`.\cloudflared.exe tunnel run jenkins`)
 - Verify webhook URL ends with `/github-webhook/`
 - Check GitHub webhook recent deliveries
+- Verify tunnel status: `.\cloudflared.exe tunnel info jenkins`
 
 ### Ansible can't reach servers?
 

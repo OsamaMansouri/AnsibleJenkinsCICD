@@ -1,0 +1,78 @@
+// ============================================================
+// AnsibleJenkinsCICD - CI/CD Pipeline Architecture
+// Paste this code at: https://app.eraser.io
+// ============================================================
+
+// LAYER 1: Development
+Developer [color: blue, label: "Developer"]
+LocalCode [color: blue, label: "Local Code\nPython + Java"]
+GitCommit [color: blue, label: "Git Commit"]
+
+// LAYER 2: Version Control
+GitHubRepo [color: gray, label: "GitHub Repository\nOsamaMansouri/AnsibleJenkinsCICD"]
+GitHubWebhook [color: gray, label: "GitHub Webhook\nPOST Event"]
+
+// LAYER 3: Tunnel Service
+CloudflareTunnel [color: purple, label: "Cloudflare Tunnel\nPermanent URL\nhttps://jenkins-osama.osamansouri.me"]
+
+// LAYER 4: CI/CD Orchestration
+JenkinsContainer [color: orange, label: "Jenkins\nDocker Container\nPort 9090"]
+JenkinsPipeline [color: orange, label: "Jenkinsfile\nPipeline as Code"]
+
+// LAYER 5: Docker Build Agents
+DockerPython [color: blue, label: "Docker Agent\npython:3.9-slim\npip install + pytest"]
+DockerMaven [color: blue, label: "Docker Agent\nmaven:3.8-openjdk-11\nmvn clean test package"]
+DockerAnsible [color: red, label: "Docker Agent\nwillhallonline/ansible\nansible-playbook deploy.yml"]
+
+// LAYER 6: Ansible Configuration
+AnsibleInventory [color: red, label: "Ansible Inventory\nhosts.ini"]
+AnsiblePlaybook [color: red, label: "Ansible Playbook\ndeploy.yml"]
+AnsibleGroupVars [color: red, label: "Group Variables\ndev.yml | staging.yml | prod.yml"]
+
+// LAYER 7: Target Servers (Docker Containers)
+ServerDev [color: green, label: "Dev Server\nansible-dev-server\nUbuntu 22.04\nSSH Port 2221"]
+ServerStaging [color: yellow, label: "Staging Server\nansible-staging-server\nUbuntu 22.04\nSSH Port 2222"]
+ServerProd [color: red, label: "Production Server\nansible-prod-server\nUbuntu 22.04\nSSH Port 2223"]
+
+// LAYER 8: Deployed Applications
+PythonApp [color: green, label: "Python Application\n/opt/AnsibleJenkinsCICD/python/\napp.py"]
+JavaApp [color: green, label: "Java Application\n/opt/AnsibleJenkinsCICD/java/\nmy-first-app-1.0.0.jar"]
+
+// ============================================================
+// CONNECTIONS
+// ============================================================
+
+// Development Flow
+Developer > LocalCode: Write Code
+LocalCode > GitCommit: git add .
+GitCommit > GitHubRepo: git push origin main
+
+// GitHub to Jenkins (via Cloudflare Tunnel)
+GitHubRepo > GitHubWebhook: Trigger
+GitHubWebhook > CloudflareTunnel: POST /github-webhook/
+CloudflareTunnel > JenkinsContainer: Forward Request
+
+// Jenkins Pipeline Execution
+JenkinsContainer > JenkinsPipeline: Read Pipeline
+JenkinsPipeline > DockerPython: Stage 1 - Python Test
+JenkinsPipeline > DockerMaven: Stage 2 - Java Build
+DockerPython > DockerAnsible: Tests Passed
+DockerMaven > DockerAnsible: Build Success
+
+// Ansible Configuration Loading
+DockerAnsible > AnsibleInventory: Load Hosts
+DockerAnsible > AnsiblePlaybook: Execute
+DockerAnsible > AnsibleGroupVars: Load Variables
+
+// Deployment to Servers
+AnsiblePlaybook > ServerDev: SSH Deploy
+AnsiblePlaybook > ServerStaging: SSH Deploy
+AnsiblePlaybook > ServerProd: SSH Deploy
+
+// Applications Installed
+ServerDev > PythonApp: Deploy
+ServerDev > JavaApp: Deploy
+ServerStaging > PythonApp: Deploy
+ServerStaging > JavaApp: Deploy
+ServerProd > PythonApp: Deploy
+ServerProd > JavaApp: Deploy

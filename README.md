@@ -14,16 +14,18 @@ This project showcases a production-ready CI/CD pipeline that:
 ## 🏗️ Architecture
 
 ```
-git push → GitHub → Webhook → Jenkins
-                                 │
-                                 ├── 🐍 Python Tests
-                                 ├── ☕ Java Build & Test
-                                 └── 🔧 Ansible Deployment
-                                         │
-                                         ├── dev-server
-                                         ├── staging-server
-                                         └── prod-server
+git push → GitHub → Webhook → Cloudflare Tunnel → Jenkins
+                                                      │
+                                                      ├── 🐍 Python Tests (Docker)
+                                                      ├── ☕ Java Build & Test (Docker)
+                                                      └── 🔧 Ansible Deployment (Docker)
+                                                              │
+                                                              ├── dev-server (:2221)
+                                                              ├── staging-server (:2222)
+                                                              └── prod-server (:2223)
 ```
+
+**Permanent Webhook URL:** `https://jenkins-osama.osamansouri.me/github-webhook/`
 
 ## 📁 Project Structure
 
@@ -57,7 +59,7 @@ AnsibleJenkinsCICD/
 
 - Docker & Docker Compose
 - Git
-- ngrok (for webhook)
+- Cloudflare Tunnel (for webhook) - [Setup Guide](docs/SETUP.md#cloudflare-tunnel)
 
 ### 1. Clone the Repository
 
@@ -83,16 +85,29 @@ docker run -d --name jenkins \
   my-jenkins:latest
 ```
 
-### 4. Start ngrok (for webhook)
+### 4. Start Cloudflare Tunnel (for webhook)
 
-```bash
-ngrok http 9090
+```powershell
+# Download cloudflared (one time)
+Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile "cloudflared.exe"
+
+# Login to Cloudflare (one time)
+.\cloudflared.exe tunnel login
+
+# Create tunnel (one time)
+.\cloudflared.exe tunnel create jenkins
+
+# Run tunnel
+.\cloudflared.exe tunnel --url http://localhost:9090 run jenkins
+
+# Route to your domain
+.\cloudflared.exe tunnel route dns jenkins jenkins-subdomain
 ```
 
 ### 5. Configure GitHub Webhook
 
 - Go to your GitHub repo → Settings → Webhooks
-- Add webhook URL: `https://YOUR-NGROK-URL/github-webhook/`
+- Add webhook URL: `https://jenkins-osama.osamansouri.me/github-webhook/`
 
 ### 6. Push and Watch!
 
@@ -130,15 +145,15 @@ docker run --rm --network test-server_ansible-network \
 
 ## 🛠️ Technologies Used
 
-| Technology | Purpose                               |
-| ---------- | ------------------------------------- |
-| Jenkins    | CI/CD Orchestration                   |
-| Ansible    | Configuration Management & Deployment |
-| Docker     | Containerization                      |
-| GitHub     | Version Control & Webhooks            |
-| Python     | Application & Testing                 |
-| Java/Maven | Application & Build                   |
-| ngrok      | Local tunnel for webhooks             |
+| Technology        | Purpose                               |
+| ----------------- | ------------------------------------- |
+| Jenkins           | CI/CD Orchestration                   |
+| Ansible           | Configuration Management & Deployment |
+| Docker            | Containerization                      |
+| GitHub            | Version Control & Webhooks            |
+| Python            | Application & Testing                 |
+| Java/Maven        | Application & Build                   |
+| Cloudflare Tunnel | Permanent URL for webhooks            |
 
 ## 📝 License
 
