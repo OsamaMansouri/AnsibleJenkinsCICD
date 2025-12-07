@@ -55,7 +55,7 @@ pipeline {
             agent {
                 docker { 
                     image 'willhallonline/ansible:latest'
-                    args '-u root --network host'
+                    args '-u root --network test-server_ansible-network'
                 }
             }
             steps {
@@ -75,7 +75,7 @@ pipeline {
                 echo '=== Running Deployment Playbook ==='
                 sh '''
                     cd ansible
-                    ansible-playbook -i inventory/hosts.ini playbooks/test-connection.yml || echo "Playbook completed with warnings"
+                    ansible-playbook -i inventory/hosts.ini playbooks/deploy.yml
                 '''
                 
                 echo "✅ Ansible deployment completed for ${APP_NAME} v${VERSION}"
