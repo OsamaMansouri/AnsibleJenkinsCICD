@@ -9,7 +9,6 @@ ENV/
 .pytest_cache/
 
 # IDE
-.vscode/
 .idea/
 
 # OS
