@@ -17,38 +17,34 @@ pipeline {
         }
         
         // ==================== PYTHON PIPELINE ====================
-        stage('🐍 Python - Install Dependencies') {
+        stage('�� Python - Install & Test') {
+            agent {
+                docker { 
+                    image 'python:3.9-slim'
+                    args '-u root'
+                }
+            }
             steps {
                 echo '=== Installing Python dependencies ==='
                 dir('python') {
-                    sh 'pip3 install -r requirements.txt'
-                }
-            }
-        }
-        
-        stage('🐍 Python - Test') {
-            steps {
-                echo '=== Running Python tests ==='
-                dir('python') {
-                    sh 'python3 test_app.py'
+                    sh 'pip install -r requirements.txt'
+                    sh 'python test_app.py'
                 }
             }
         }
         
         // ==================== JAVA PIPELINE ====================
         stage('☕ Java - Build & Test') {
+            agent {
+                docker { 
+                    image 'maven:3.8-openjdk-11'
+                    args '-u root'
+                }
+            }
             steps {
                 echo '=== Building and Testing Java application ==='
                 dir('java') {
                     sh 'mvn clean test'
-                }
-            }
-        }
-        
-        stage('☕ Java - Package') {
-            steps {
-                echo '=== Packaging Java application ==='
-                dir('java') {
                     sh 'mvn package -DskipTests'
                 }
             }
