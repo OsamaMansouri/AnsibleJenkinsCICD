@@ -1,4 +1,10 @@
-# Python
+# =====================================================
+# GITIGNORE - Best Practices for CI/CD Project
+# =====================================================
+
+# =====================================================
+# PYTHON
+# =====================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,12 +12,129 @@ __pycache__/
 .Python
 venv/
 ENV/
+env/
+.venv/
 .pytest_cache/
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# IDE
+# =====================================================
+# JAVA / MAVEN
+# =====================================================
+java/target/
+!java/target/*.jar
+*.class
+*.log
+*.jar
+!java/target/my-first-app-*.jar
+hs_err_pid*
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# =====================================================
+# ANSIBLE
+# =====================================================
+*.retry
+ansible/*.retry
+ansible/playbooks/*.retry
+
+# Ansible Vault files (encrypted secrets)
+# Don't ignore .vault files if you use them
+# vault.yml
+
+# =====================================================
+# TERRAFORM (for future use)
+# =====================================================
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# =====================================================
+# IDE / EDITORS
+# =====================================================
 .idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
 
-# OS
+# =====================================================
+# OS FILES
+# =====================================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
+# =====================================================
+# DOCKER
+# =====================================================
+# Don't ignore Dockerfile or docker-compose.yml
+.docker/
+
+# =====================================================
+# LOGS & TEMP FILES
+# =====================================================
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# =====================================================
+# SECRETS & CREDENTIALS
+# =====================================================
+*.pem
+*.key
+*.crt
+*.p12
+.env
+.env.local
+.env.*.local
+secrets.yml
+credentials.yml
+
+# =====================================================
+# NODE (if using any Node.js tools)
+# =====================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =====================================================
+# MISC
+# =====================================================
+.cache/
+*.pid
+*.seed
+coverage/
+.nyc_output/

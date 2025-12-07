@@ -1,0 +1,22 @@
+[Unit]
+Description={{ app_name }} Java Application
+After=network.target
+
+[Service]
+Type=simple
+User={{ service_user | default('root') }}
+Group={{ service_group | default('root') }}
+WorkingDirectory={{ java_app_path }}
+ExecStart=/usr/bin/java -jar {{ java_app_path }}/{{ java_jar_name | default('app.jar') }}
+Restart=always
+RestartSec=5
+StandardOutput=append:{{ logs_path | default('/var/log') }}/java-app.log
+StandardError=append:{{ logs_path | default('/var/log') }}/java-app-error.log
+
+# Java-specific settings
+Environment="JAVA_HOME=/usr/lib/jvm/java-{{ java_version | default('11') }}-openjdk-amd64"
+Environment="JAVA_OPTS=-Xmx512m -Xms256m"
+
+[Install]
+WantedBy=multi-user.target
+

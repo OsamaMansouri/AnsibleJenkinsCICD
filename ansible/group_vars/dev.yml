@@ -1,0 +1,14 @@
+---
+# =====================================================
+# DEVELOPMENT ENVIRONMENT VARIABLES
+# =====================================================
+
+env_name: development
+debug_mode: true
+
+# Development-specific settings
+log_level: DEBUG
+enable_profiling: true
+# Development paths (can override defaults)
+# deploy_path: /opt/dev/{{ app_name }}
+

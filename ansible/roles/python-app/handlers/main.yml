@@ -1,0 +1,16 @@
+---
+# =====================================================
+# PYTHON APP ROLE - Handlers
+# =====================================================
+
+- name: Reload Systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Restart Python App
+  systemd:
+    name: python-app
+    state: restarted
+    enabled: yes
+  ignore_errors: yes
+

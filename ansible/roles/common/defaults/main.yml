@@ -1,0 +1,17 @@
+---
+# =====================================================
+# COMMON ROLE - Default Variables
+# =====================================================
+
+# Override these in group_vars or host_vars
+
+deploy_base_path: /opt
+logs_path: /var/log/apps
+
+common_packages:
+  - python3
+  - python3-pip
+  - curl
+  - wget
+  - git
+

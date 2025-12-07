@@ -1,0 +1,40 @@
+---
+# =====================================================
+# PYTHON APP ROLE - Deploy Python Application
+# =====================================================
+
+- name: Create Python app directory
+  file:
+    path: "{{ python_app_path }}"
+    state: directory
+    owner: "{{ service_user | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    mode: '0755'
+
+- name: Copy Python application files
+  copy:
+    src: "{{ playbook_dir }}/../../python/"
+    dest: "{{ python_app_path }}/"
+    owner: "{{ service_user | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    mode: '0644'
+  notify: Restart Python App
+
+- name: Install Python dependencies
+  pip:
+    requirements: "{{ python_app_path }}/requirements.txt"
+    executable: "{{ pip_executable | default('pip3') }}"
+  ignore_errors: yes
+
+- name: Create Python app systemd service
+  template:
+    src: python-app.service.j2
+    dest: /etc/systemd/system/python-app.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload Systemd
+    - Restart Python App
+  ignore_errors: yes
+

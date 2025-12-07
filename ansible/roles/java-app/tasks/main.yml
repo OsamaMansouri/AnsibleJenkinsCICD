@@ -1,0 +1,35 @@
+---
+# =====================================================
+# JAVA APP ROLE - Deploy Java Application
+# =====================================================
+
+- name: Create Java app directory
+  file:
+    path: "{{ java_app_path }}"
+    state: directory
+    owner: "{{ service_user | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    mode: '0755'
+
+- name: Copy Java JAR file
+  copy:
+    src: "{{ playbook_dir }}/../../java/target/{{ java_jar_name }}"
+    dest: "{{ java_app_path }}/app.jar"
+    owner: "{{ service_user | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    mode: '0644'
+  notify: Restart Java App
+  ignore_errors: yes
+
+- name: Create Java app systemd service
+  template:
+    src: java-app.service.j2
+    dest: /etc/systemd/system/java-app.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload Systemd
+    - Restart Java App
+  ignore_errors: yes
+

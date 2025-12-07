@@ -1,0 +1,20 @@
+---
+# =====================================================
+# PRODUCTION ENVIRONMENT VARIABLES
+# =====================================================
+
+env_name: production
+debug_mode: false
+
+# Production-specific settings
+log_level: WARNING
+enable_profiling: false
+
+# Production paths (can override defaults)
+# deploy_path: /opt/prod/{{ app_name }}
+
+# Production security settings
+# ssl_enabled: true
+# ssl_cert_path: /etc/ssl/certs/app.crt
+# ssl_key_path: /etc/ssl/private/app.key
+

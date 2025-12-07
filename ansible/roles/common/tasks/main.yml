@@ -1,0 +1,33 @@
+---
+# =====================================================
+# COMMON ROLE - Tasks that run on ALL servers
+# =====================================================
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install common packages
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Create application base directory
+  file:
+    path: "{{ deploy_base_path }}"
+    state: directory
+    owner: "{{ service_user | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    mode: '0755'
+
+- name: Create logs directory
+  file:
+    path: "{{ logs_path }}"
+    state: directory
+    owner: "{{ service_user | default('root') }}"
+    group: "{{ service_group | default('root') }}"
+    mode: '0755'
+

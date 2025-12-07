@@ -1,0 +1,42 @@
+---
+# =====================================================
+# GLOBAL VARIABLES (apply to all hosts)
+# =====================================================
+
+# Application Settings
+app_name: AnsibleJenkinsCICD
+app_version: "1.0.0"
+app_description: "CI/CD Demo Application"
+
+# Deployment Paths
+deploy_base_path: /opt
+deploy_path: "{{ deploy_base_path }}/{{ app_name }}"
+python_app_path: "{{ deploy_path }}/python"
+java_app_path: "{{ deploy_path }}/java"
+logs_path: "{{ deploy_path }}/logs"
+
+# Python Settings
+python_version: "3"
+pip_executable: pip3
+python_executable: python3
+
+# Java Settings
+java_version: "11"
+java_jar_name: "my-first-app-1.0.0.jar"
+
+# Service Settings
+service_user: root
+service_group: root
+
+# Common Packages
+common_packages:
+  - python3
+  - python3-pip
+  - openjdk-11-jre
+  - git
+  - curl
+  - wget
+
+# Ansible Settings
+ansible_python_interpreter: /usr/bin/python3
+

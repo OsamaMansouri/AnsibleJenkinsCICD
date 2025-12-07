@@ -1,0 +1,17 @@
+[Unit]
+Description={{ app_name }} Java Application
+After=network.target
+
+[Service]
+Type=simple
+User={{ service_user | default('root') }}
+Group={{ service_group | default('root') }}
+WorkingDirectory={{ java_app_path }}
+ExecStart=/usr/bin/java -jar {{ java_app_path }}/app.jar
+Restart=always
+RestartSec=5
+Environment="JAVA_OPTS=-Xmx512m -Xms256m"
+
+[Install]
+WantedBy=multi-user.target
+

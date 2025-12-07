@@ -1,0 +1,14 @@
+---
+# =====================================================
+# STAGING ENVIRONMENT VARIABLES
+# =====================================================
+
+env_name: staging
+debug_mode: true
+
+# Staging-specific settings
+log_level: INFO
+enable_profiling: false
+# Staging paths (can override defaults)
+# deploy_path: /opt/staging/{{ app_name }}
+

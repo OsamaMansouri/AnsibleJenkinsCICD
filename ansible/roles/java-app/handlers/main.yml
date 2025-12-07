@@ -1,0 +1,16 @@
+---
+# =====================================================
+# JAVA APP ROLE - Handlers
+# =====================================================
+
+- name: Reload Systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Restart Java App
+  systemd:
+    name: java-app
+    state: restarted
+    enabled: yes
+  ignore_errors: yes
+

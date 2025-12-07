@@ -1,0 +1,19 @@
+[Unit]
+Description={{ app_name }} Python Application
+After=network.target
+
+[Service]
+Type=simple
+User={{ service_user | default('root') }}
+Group={{ service_group | default('root') }}
+WorkingDirectory={{ python_app_path }}
+Environment="PATH=/usr/bin"
+ExecStart=/usr/bin/{{ python_executable | default('python3') }} {{ python_app_path }}/app.py
+Restart=always
+RestartSec=5
+StandardOutput=append:{{ logs_path | default('/var/log') }}/python-app.log
+StandardError=append:{{ logs_path | default('/var/log') }}/python-app-error.log
+
+[Install]
+WantedBy=multi-user.target
+
